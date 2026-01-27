@@ -26,9 +26,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, relying on system env")
 	}
-	dsn := fmt.Sprintf("postgres://%s:%s@localhost:%s/%s?sslmode=disable",
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"),
 	)
@@ -71,7 +72,7 @@ func main() {
 	// 1. Middleware (The reason Chi wins)
 	r.Use(middleware.Logger)    // Log every request automatically
 	r.Use(middleware.Recoverer) // Don't crash if a handler panics
-
+	r.Post("/admin/seats", seatHandler.CreateSeat)
 	r.Post("/register", userHandler.Register)
 	r.Post("/login", userHandler.Login)
 
