@@ -23,7 +23,7 @@ func NewDatabase(dsn string) (*DB, error) {
 	}
 
 	// Optimization: Connection Pooling settings
-	config.MaxConns = 50
+	config.MaxConns = 300
 	config.MinConns = 2
 	config.MaxConnLifetime = time.Hour
 
