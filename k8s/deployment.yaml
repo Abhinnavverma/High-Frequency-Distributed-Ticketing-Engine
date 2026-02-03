@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-backend
+spec:
+  replicas: 3  # 🚀 We are launching 3 copies!
+  selector:
+    matchLabels:
+      app: ticket-api
+  template:
+    metadata:
+      labels:
+        app: ticket-api
+    spec:
+      containers:
+        - name: go-server
+          image: ticketmaster:latest  # ⚠️ Must match your build tag exactly
+          imagePullPolicy: Never      # ⚠️ CRITICAL for local dev
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ticket-config
+            - secretRef:
+                name: ticket-secrets  # 👈 Hooks up to the secret you just created
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
